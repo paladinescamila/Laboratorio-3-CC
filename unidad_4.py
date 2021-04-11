@@ -320,7 +320,16 @@ def procesar(url, N):
 def main():
     
     print("EJEMPLO 1")
-    url = "https://raw.githubusercontent.com/paladinescamila/Laboratorio-2-CC/main/muertos.csv"
+    url = "https://raw.githubusercontent.com/paladinescamila/Laboratorio-3-CC/main/oro.csv"
+    # url = "muertos.csv" # URL alternativa para ejecutar de manera local
+    te, ye, tv, yv = procesar(url, 10)
+    resolver(te, ye, tv, yv, 1, True)
+    resolver(te, ye, tv, yv, 2, True)
+    resolver(te, ye, tv, yv, 3, True)
+    resolver(te, ye, tv, yv, 4, True)
+
+    print("EJEMPLO 2")
+    url = "https://raw.githubusercontent.com/paladinescamila/Laboratorio-3-CC/main/poblacion.csv"
     # url = "muertos.csv" # URL alternativa para ejecutar de manera local
     te, ye, tv, yv = procesar(url, 10)
     resolver(te, ye, tv, yv, 1, True)
@@ -338,6 +347,7 @@ main()
 # Comparación de los métodos
 def estadisticas(url, N):
     metodos = ['Polinómica', 'Lagrange', 'Newton', 'A trozos']
+
     te, ye, tv, yv = procesar(url, N)
     errores, tiempos = [], []
     for i in range(4):
@@ -348,6 +358,10 @@ def estadisticas(url, N):
     pd.DataFrame({'Error': errores}, index=metodos).plot(kind='bar')
     pd.DataFrame({'Tiempo': tiempos}, index=metodos).plot(kind='bar')
 
+print("EJEMPLO 1")
+url = "https://raw.githubusercontent.com/paladinescamila/Laboratorio-3-CC/main/oro.csv"
+estadisticas(url, 10)
 
-url = "https://raw.githubusercontent.com/paladinescamila/Laboratorio-2-CC/main/muertos.csv"
+print("EJEMPLO 2")
+url = "https://raw.githubusercontent.com/paladinescamila/Laboratorio-3-CC/main/poblacion.csv"
 estadisticas(url, 10)
