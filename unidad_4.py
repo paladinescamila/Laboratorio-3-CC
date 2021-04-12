@@ -123,9 +123,11 @@ def polinomio(n, t, x):
     return ft
 
 
-# Función auxiliar: Mapeo de una entrada a un rango de valores
+# Función auxiliar: Mapea una entrada t_var a un rango de valores en t
 def mapear(n, t, t_var):
     """
+    Entrada: dos enteros n y t_var, y un vector de enteros t.
+    Salida: índice en t donde comienza el rango donde se encuentra t_var.
     """
     
     for i in range(n - 1):
@@ -155,6 +157,8 @@ def polinomial(t, y):
 # Método de Interpolación de Lagrange
 def lagrange(t, y):
     """
+    Entrada: dos vectores t & y.
+    Salida: polinomio interpolante para los datos (ti, yi).
     """
 
     n, pol = len(t), 0
@@ -174,6 +178,8 @@ def lagrange(t, y):
 # Método de Interpolación de Newton
 def newton(t, y):
     """
+    Entrada: dos vectores t & y.
+    Salida: polinomio interpolante para los datos (ti, yi).
     """
 
     n = len(t)
@@ -198,6 +204,9 @@ def newton(t, y):
 # Método de Interpolación Lineal a Trozos
 def lineal_a_trozos(t, y):
     """
+    Entrada: dos vectores t & y.
+    Salida: conjunto de parámetros x de un ajuste polinomial de cada 
+            par de puntos consecutivos (ti, yi).
     """
 
     n = len(t)
@@ -217,6 +226,12 @@ def lineal_a_trozos(t, y):
 # Muestra los resultados, tiempo y error absoluto promedio
 def resolver(te, ye, tv, yv, metodo, mostrar):
     """
+    Entrada: cuatro vectores te, ye, yv, yv que contienen los datos de 
+            entrenamiento y validación, un entero "metodo" que define el 
+            método por el cual se va a calcular y un booleano "mostrar" que
+            determina si se grafica e imprime los resultados obtenidos.
+    Salida: error absoluto promedio, desviación estándar del error, y tiempo 
+            de cómputo para el método seleccionado.
     """
 
     n = len(te)
@@ -300,7 +315,7 @@ def resolver(te, ye, tv, yv, metodo, mostrar):
 # Procesamiento de los datos (adaptado a los ejemplos)
 def procesar(url, N):
     """
-    Entrada: url del conjunto de datos.
+    Entrada: url del conjunto de datos y cantidad total de datos a extraer.
     Salida: datos de entrenamiento te (entradas) y ye (salidas), y
             de validación tv (entradas) y yv (salidas).
     """
@@ -321,7 +336,7 @@ def main():
     
     print("EJEMPLO 1")
     url = "https://raw.githubusercontent.com/paladinescamila/Laboratorio-3-CC/main/oro.csv"
-    # url = "muertos.csv" # URL alternativa para ejecutar de manera local
+    # url = "oro.csv" # URL alternativa para ejecutar de manera local
     te, ye, tv, yv = procesar(url, 10)
     resolver(te, ye, tv, yv, 1, True)
     resolver(te, ye, tv, yv, 2, True)
@@ -330,7 +345,7 @@ def main():
 
     print("EJEMPLO 2")
     url = "https://raw.githubusercontent.com/paladinescamila/Laboratorio-3-CC/main/poblacion.csv"
-    # url = "muertos.csv" # URL alternativa para ejecutar de manera local
+    # url = "poblacion.csv" # URL alternativa para ejecutar de manera local
     te, ye, tv, yv = procesar(url, 10)
     resolver(te, ye, tv, yv, 1, True)
     resolver(te, ye, tv, yv, 2, True)
@@ -351,7 +366,7 @@ def estadisticas(url, N):
     te, ye, tv, yv = procesar(url, N)
     errores, tiempos = [], []
     for i in range(4):
-        ep, ed, t = resolver(te, ye, tv, yv, i+1, False)
+        ep, ed, t = resolver(te, ye, tv, yv, i + 1, False)
         errores += [ep]
         tiempos += [t]
 
