@@ -6,6 +6,27 @@ import sympy as sym
 import matplotlib.pyplot as plt
 
 
+# Función auxiliar: Método de Sustitución Sucesiva hacia adelante
+def sucesiva_hacia_adelante(A, b):
+    """
+    Entrada: una matriz triangular inferior A y un vector b.
+    Salida: un vector x tal que Ax = b.
+    """
+    if (np.linalg.det(A) == 0):
+        print("A es una matriz singular, el sistema no tiene solución.")
+        return []
+    else:
+        n = len(A) - 1
+        x = [b[0] / A[0][0]] + [None for _ in range(n)]
+        for i in range(1, n+1):
+            sumatoria = 0
+            for j in range(i):
+                sumatoria += A[i][j] * x[j]
+            x[i] = round((b[i] - sumatoria) / A[i][i], 5)
+
+        return x
+
+
 # Función auxiliar: Ejecuta una función polinómica para una entrada t
 def polinomio(n, t, x):
     """
@@ -275,9 +296,9 @@ def imprimir(titulo, porcentajes, valores, decimal):
         e_newton = valores[i][2]
         e_trozos = valores[i][3]
         if (decimal):
-            print("{0}\t{1:.10f}\t{2:.10f}\t{3:.10f}\t{4:.10f}".format(i, e_polinomial, e_lagrange, e_newton, e_trozos))
+            print("{0}\t{1:.10f}\t{2:.10f}\t{3:.10f}\t{4:.10f}".format(porcentajes[i], e_polinomial, e_lagrange, e_newton, e_trozos))
         else:
-            print("{0}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}".format(i, e_polinomial, e_lagrange, e_newton, e_trozos))
+            print("{0}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}".format(porcentajes[i], e_polinomial, e_lagrange, e_newton, e_trozos))
             
     print("-------------------------------------------------------------------")
 
@@ -288,7 +309,7 @@ def estadisticas(url, N_pol, N_trozos):
     metodos = ['Polinómica', 'Lagrange', 'Newton', 'A trozos']
     colores = ['red', 'green', 'orange', 'blue']
     lineas = ['-', '--', '-.', ':']
-    porcentajes = [i for i in range(2, 24, 2)]
+    porcentajes = [i for i in range(2, 23, 2)]
     errores, desviaciones, tiempos = [], [], []
 
     for i in porcentajes:
