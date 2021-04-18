@@ -20,8 +20,8 @@ def polinomio(n, t, x):
 # Función auxiliar: Mapea una entrada t_var a un rango de valores en t
 def mapear(n, t, t_var):
     """
-    Entrada: dos enteros n y t_var, y un vector de enteros t.
-    Salida: índice en t donde comienza el rango donde se encuentra t_var.
+    Entrada: dos enteros n y t_var, un vector t.
+    Salida: índice dentro de t donde comienza el rango en que se encuentra t_var.
     """
     
     for i in range(n - 1):
@@ -34,10 +34,9 @@ def mapear(n, t, t_var):
 # Método de Interpolación Polinomial
 def polinomial(t, y):
     """
-    Entrada: un vector t y un vector y.
-    Salida: un vector x de parámetros para un ajuste polinomial
-            por interpolación usando los datos de t (entrada) 
-            & y (salida).
+    Entrada: dos vectores t & y.
+    Salida: un vector x de parámetros para un ajuste polinomial por 
+            interpolación usando los datos de t (entrada) & y (salida).
     """
 
     n = len(t)
@@ -212,8 +211,9 @@ def resolver(te, ye, tv, yv, metodo, mostrar):
 # Procesamiento de los datos (adaptado a los ejemplos)
 def procesar(url, N, porcentaje_e):
     """
-    Entrada: url del conjunto de datos, cantidad total de datos a extraer y 
-            porcentaje de datos de entrenamiento.
+    Entrada: url del conjunto de datos, un entero N que corresponde a la 
+            cantidad total de datos a extraer y un entero "porcentaje_e" que 
+            indica el porcentaje de datos de entrenamiento.
     Salida: datos de entrenamiento te (entradas) y ye (salidas), y
             de validación tv (entradas) y yv (salidas).
     """
