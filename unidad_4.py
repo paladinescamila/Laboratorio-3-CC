@@ -6,27 +6,6 @@ import sympy as sym
 import matplotlib.pyplot as plt
 
 
-# Función auxiliar: Método de Sustitución Sucesiva hacia adelante
-def sucesiva_hacia_adelante(A, b):
-    """
-    Entrada: una matriz triangular inferior A y un vector b.
-    Salida: un vector x tal que Ax = b.
-    """
-    if (np.linalg.det(A) == 0):
-        print("A es una matriz singular, el sistema no tiene solución.")
-        return []
-    else:
-        n = len(A) - 1
-        x = [b[0] / A[0][0]] + [None for _ in range(n)]
-        for i in range(1, n+1):
-            sumatoria = 0
-            for j in range(i):
-                sumatoria += A[i][j] * x[j]
-            x[i] = round((b[i] - sumatoria) / A[i][i], 5)
-
-        return x
-
-
 # Función auxiliar: Ejecuta una función polinómica para una entrada t
 def polinomio(n, t, x):
     """
@@ -46,7 +25,7 @@ def mapear(n, t, t_var):
     """
     
     for i in range(n - 1):
-        if (t_var >= t[i] and t_var <= t[i+1]):
+        if (t_var >= t[i] and t_var <= t[i + 1]):
             return i
     
     return n - 2
@@ -61,7 +40,7 @@ def polinomial(t, y):
     """
 
     n = len(t)
-    A = [[float (i**j) for j in range(n)] for i in t]
+    A = [[float(i**j) for j in range(n)] for i in t]
     b = [i for i in y]
     x = np.linalg.solve(A, b)
 
@@ -148,8 +127,8 @@ def resolver(te, ye, tv, yv, metodo, mostrar):
             de cómputo para el método seleccionado.
     """
 
-    ne, nv = len(te), len(tv)
     t_sym = sym.Symbol("t")
+    ne, nv = len(te), len(tv)
     min_t, max_t = 1, ne + nv
     t_funcion = np.linspace(min_t, max_t, 1000)
     
@@ -199,9 +178,9 @@ def resolver(te, ye, tv, yv, metodo, mostrar):
             errores += [np.abs(polinomio(2, tv[i], xi) - yv[i])]
         
         y_funcion = []
-        for i in range(1000):
-            xi = soluciones[mapear(ne, te, t_funcion[i])]
-            y_funcion += [polinomio(2, t_funcion[i], xi)]
+        for i in t_funcion:
+            xi = soluciones[mapear(ne, te, i)]
+            y_funcion += [polinomio(2, i, xi)]
 
     error_promedio = np.mean(errores)
     error_desviacion = np.std(errores)
@@ -212,8 +191,8 @@ def resolver(te, ye, tv, yv, metodo, mostrar):
         plt.plot(tv[0], yv[0], 'ro', markersize=3, color="red", label="Validación")
         plt.plot(t_funcion, y_funcion, color="black", label="Polinomio")
 
-        for i in range(1,ne): plt.plot(te[i], ye[i], 'ro', markersize=4, color="blue")
-        for i in range(1,nv): plt.plot(tv[i], yv[i], 'ro', markersize=3, color="red")
+        for i in range(1, ne): plt.plot(te[i], ye[i], 'ro', markersize=4, color="blue")
+        for i in range(1, nv): plt.plot(tv[i], yv[i], 'ro', markersize=3, color="red")
 
         plt.legend()
         plt.xlabel('t')
@@ -221,10 +200,10 @@ def resolver(te, ye, tv, yv, metodo, mostrar):
         plt.grid()
         plt.show()
 
-        if (metodo != 4): print("f(t, x) = {0}".format(sym.expand(pol)))
-        print("Tiempo = {0:.5f}s".format(tiempo))
-        print("Error (promedio) = {0:.2f}".format(error_promedio))
-        print("Error (desviación estándar) = {0:.2f}\n".format(error_desviacion))
+        if (metodo != 4): print("f(t, x) = {}".format(sym.expand(pol)))
+        print("Tiempo = {:.5f}s".format(tiempo))
+        print("Error (promedio) = {:.2f}".format(error_promedio))
+        print("Error (desviación estándar) = {:.2f}\n".format(error_desviacion))
 
     return error_promedio, error_desviacion, tiempo
 
@@ -244,9 +223,9 @@ def procesar(url, N, porcentaje_e):
     ne = int(N * porcentaje_e / 100)
     
     te = [int(i) for i in np.linspace(1, N, ne)]
-    ye = [y[i-1] for i in te]
-    tv = list(set([i+1 for i in range(N)]) - set(te))
-    yv = [y[i-1] for i in tv]
+    ye = [y[i - 1] for i in te]
+    tv = list(set([i + 1 for i in range(N)]) - set(te))
+    yv = [y[i - 1] for i in tv]
 
     return te, ye, tv, yv
 
@@ -266,7 +245,7 @@ def main():
 
     print("EJEMPLO 2")
     url = "https://raw.githubusercontent.com/paladinescamila/Laboratorio-3-CC/main/python.csv"
-    # # url = "clima.csv" # URL alternativa para ejecutar de manera local
+    # # url = "python.csv" # URL alternativa para ejecutar de manera local
     te, ye, tv, yv = procesar(url, 50, 13)
     resolver(te, ye, tv, yv, 1, True)
     resolver(te, ye, tv, yv, 2, True)
@@ -289,6 +268,7 @@ def imprimir(titulo, porcentajes, valores, decimal):
     print("-------------------------------------------------------------------")
     print("%\tPolinomial\tLagrange\tNewton\t\tA trozos")
     print("-------------------------------------------------------------------")
+
     p = len(porcentajes)
     for i in range(p):
         e_polinomial = valores[i][0]
@@ -296,9 +276,9 @@ def imprimir(titulo, porcentajes, valores, decimal):
         e_newton = valores[i][2]
         e_trozos = valores[i][3]
         if (decimal):
-            print("{0}\t{1:.10f}\t{2:.10f}\t{3:.10f}\t{4:.10f}".format(porcentajes[i], e_polinomial, e_lagrange, e_newton, e_trozos))
+            print("{}\t{:.10f}\t{:.10f}\t{:.10f}\t{:.10f}".format(porcentajes[i], e_polinomial, e_lagrange, e_newton, e_trozos))
         else:
-            print("{0}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}".format(porcentajes[i], e_polinomial, e_lagrange, e_newton, e_trozos))
+            print("{}\t{:.5f}\t{:.5f}\t{:.5f}\t{:.5f}".format(porcentajes[i], e_polinomial, e_lagrange, e_newton, e_trozos))
             
     print("-------------------------------------------------------------------")
 
@@ -309,6 +289,7 @@ def estadisticas(url, N_pol, N_trozos):
     metodos = ['Polinómica', 'Lagrange', 'Newton', 'A trozos']
     colores = ['red', 'green', 'orange', 'blue']
     lineas = ['-', '--', '-.', ':']
+
     porcentajes = [i for i in range(2, 23, 2)]
     errores, desviaciones, tiempos = [], [], []
 
@@ -336,6 +317,7 @@ def estadisticas(url, N_pol, N_trozos):
     for i in range(4):
         errores_metodo = [errores[j][i] for j in range(len(porcentajes))]
         plt.plot(porcentajes, errores_metodo, lineas[i], color=colores[i], label=metodos[i])
+
     plt.title("Error (Promedio)")
     plt.legend()
     plt.xlabel("Porcentaje de entrenamiento")
@@ -348,6 +330,7 @@ def estadisticas(url, N_pol, N_trozos):
     for i in range(4):
         tiempos_metodo = [tiempos[j][i] for j in range(len(porcentajes))]
         plt.plot(porcentajes, tiempos_metodo, marker="o", color=colores[i], label=metodos[i])
+        
     plt.title("Tiempo de ejecución")
     plt.legend()
     plt.xlabel("Porcentaje de entrenamiento")
