@@ -6,112 +6,6 @@ import sympy as sym
 import matplotlib.pyplot as plt
 
 
-# Función auxiliar: Método de Sustitución Sucesiva hacia atrás
-def sucesiva_hacia_atras(A, b):
-    """
-    Entrada: una matriz triangular superior A y un vector b.
-    Salida: un vector x tal que Ax = b.
-    """
-    if (np.linalg.det(A) == 0):
-        print("A es una matriz singular, el sistema no tiene solución.")
-        return []
-    else:
-        n = len(A) - 1
-        x = [None for _ in range(n)] + [b[n] / A[n][n]]
-        for i in range(n, -1, -1):
-            sumatoria = 0
-            for j in range(i+1, n+1):
-                sumatoria += A[i][j] * x[j]
-            x[i] = round((b[i] - sumatoria) / A[i][i], 5)
-
-        return x
-
-
-# Función auxiliar: Método de Sustitución Sucesiva hacia adelante
-def sucesiva_hacia_adelante(A, b):
-    """
-    Entrada: una matriz triangular inferior A y un vector b.
-    Salida: un vector x tal que Ax = b.
-    """
-    if (np.linalg.det(A) == 0):
-        print("A es una matriz singular, el sistema no tiene solución.")
-        return []
-    else:
-        n = len(A) - 1
-        x = [b[0] / A[0][0]] + [None for _ in range(n)]
-        for i in range(1, n+1):
-            sumatoria = 0
-            for j in range(i):
-                sumatoria += A[i][j] * x[j]
-            x[i] = round((b[i] - sumatoria) / A[i][i], 5)
-
-        return x
-
-
-# Función auxiliar: Construye la matriz de eliminación para una columna
-def matriz_de_eliminacion(A, k, g):
-    """
-    Entrada: una matriz cuadrada A, un entero k y un booleano g.
-    Salida: matriz de eliminación de Gauss (si g es verdadero) o matriz de 
-            eliminación de Gauss-Jordan (si g es falso) para la columna Ak.
-    """
-    n = len(A)
-    M = np.identity(n)
-    for i in range(k+1, n):
-        M[i][k] = (-1) * A[i][k] / A[k][k]
-    if (not g):
-        for i in range(k):
-            M[i][k] = (-1) * A[i][k] / A[k][k]
-    
-    return M
-
-
-# Función auxiliar: Permuta una matriz y un vector dados con respecto a una fila de A
-def permutar(A, b, k):
-    """
-    Entrada: una matriz A, un vector b y un entero k.
-    Salida: una matriz A y un vector b permutados con respecto a k,
-            además de un booleano que determina si el nuevo valor
-            del pivote es cero.
-    """
-    n = len(A)
-    i = k + 1
-    while (i != n and A[k][k] == 0):
-        P = np.identity(n)
-        P[k], P[i], P[k][i], P[i][k] = 0, 0, 1, 1
-        A = np.matmul(P, A)
-        b = np.matmul(P, b)
-        i += 1
-    cero = A[k][k] == 0
-
-    return A, b, cero
-
-
-# Función auxiliar: Método de Eliminación de Gauss
-def gauss(A, b):
-    """
-    Entrada: una matriz cuadrada A y un vector b.
-    Salida: un vector x tal que Ax = b.
-    """
-    if (np.linalg.det(A) == 0):
-        print("A es una matriz singular, el sistema no tiene solución.")
-        return []
-    else:
-        n = len(A)
-        for k in range(n - 1):
-            if (A[k][k] == 0):
-                A, b, cero = permutar(A, b, k)
-                if (cero):
-                    print("El sistema no tiene solución.")
-                    return []
-            M = matriz_de_eliminacion(A, k, 1)
-            A = np.matmul(M, A)
-            b = np.matmul(M, b)
-        x = sucesiva_hacia_atras(A, b)
-
-        return x
-
-
 # Función auxiliar: Ejecuta una función polinómica para una entrada t
 def polinomio(n, t, x):
     """
@@ -149,7 +43,7 @@ def polinomial(t, y):
     n = len(t)
     A = [[float (i**j) for j in range(n)] for i in t]
     b = [i for i in y]
-    x = gauss(A, b)
+    x = np.linalg.solve(A, b)
 
     return x
 
@@ -191,7 +85,7 @@ def newton(t, y):
             for k in range(j):
                 A[i][j] *= (t[i] - t[k])
     
-    x = sucesiva_hacia_adelante(A, b)
+    x = np.linalg.solve(A, b)
 
     pol, t_sym = 0, sym.Symbol("t")
     for i in range(n):
@@ -295,11 +189,11 @@ def resolver(te, ye, tv, yv, metodo, mostrar):
     if (mostrar):
         
         plt.plot(te[0], ye[0], 'ro', markersize=4, color="blue", label="Entrenamiento")
-        plt.plot(tv[0], yv[0], 'ro', markersize=4, color="red", label="Validación")
+        plt.plot(tv[0], yv[0], 'ro', markersize=3, color="red", label="Validación")
         plt.plot(t_funcion, y_funcion, color="black", label="Polinomio")
 
         for i in range(1,ne): plt.plot(te[i], ye[i], 'ro', markersize=4, color="blue")
-        for i in range(1,nv): plt.plot(tv[i], yv[i], 'ro', markersize=4, color="red")
+        for i in range(1,nv): plt.plot(tv[i], yv[i], 'ro', markersize=3, color="red")
 
         plt.legend()
         plt.xlabel('t')
@@ -325,7 +219,7 @@ def procesar(url, N, porcentaje_e):
     """
 
     datos = pd.read_csv(url, header=None)
-    y = datos[1].tolist()[-N:]
+    y = datos[1].tolist()[:N]
     ne = int(N * porcentaje_e / 100)
     
     te = [int(i) for i in np.linspace(1, N, ne)]
@@ -342,17 +236,17 @@ def main():
     print("EJEMPLO 1")
     url = "https://raw.githubusercontent.com/paladinescamila/Laboratorio-3-CC/main/oro.csv"
     # url = "oro.csv" # URL alternativa para ejecutar de manera local
-    te, ye, tv, yv = procesar(url, 50, 10)
+    te, ye, tv, yv = procesar(url, 100, 5)
     resolver(te, ye, tv, yv, 1, True)
     resolver(te, ye, tv, yv, 2, True)
     resolver(te, ye, tv, yv, 3, True)
-    te, ye, tv, yv = procesar(url, 100, 50)
+    te, ye, tv, yv = procesar(url, 300, 50)
     resolver(te, ye, tv, yv, 4, True)
 
     print("EJEMPLO 2")
-    url = "https://raw.githubusercontent.com/paladinescamila/Laboratorio-3-CC/main/clima.csv"
+    url = "https://raw.githubusercontent.com/paladinescamila/Laboratorio-3-CC/main/python.csv"
     # # url = "clima.csv" # URL alternativa para ejecutar de manera local
-    te, ye, tv, yv = procesar(url, 50, 10)
+    te, ye, tv, yv = procesar(url, 50, 13)
     resolver(te, ye, tv, yv, 1, True)
     resolver(te, ye, tv, yv, 2, True)
     resolver(te, ye, tv, yv, 3, True)
@@ -369,22 +263,23 @@ main()
 # Imprimir las tablas
 def imprimir(titulo, porcentajes, valores, decimal):
 
-    print("-----------------------------------------------------------------------")
+    print("-------------------------------------------------------------------")
     print("                           {}                            ".format(titulo))
-    print("-----------------------------------------------------------------------")
+    print("-------------------------------------------------------------------")
     print("%\tPolinomial\tLagrange\tNewton\t\tA trozos")
-    print("-----------------------------------------------------------------------")
-    for i in porcentajes:
-        e_polinomial = valores[int(i/10)-1][0]
-        e_lagrange = valores[int(i/10)-1][1]
-        e_newton = valores[int(i/10)-1][2]
-        e_trozos = valores[int(i/10)-1][3]
+    print("-------------------------------------------------------------------")
+    p = len(porcentajes)
+    for i in range(p):
+        e_polinomial = valores[i][0]
+        e_lagrange = valores[i][1]
+        e_newton = valores[i][2]
+        e_trozos = valores[i][3]
         if (decimal):
             print("{0}\t{1:.10f}\t{2:.10f}\t{3:.10f}\t{4:.10f}".format(i, e_polinomial, e_lagrange, e_newton, e_trozos))
         else:
             print("{0}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}".format(i, e_polinomial, e_lagrange, e_newton, e_trozos))
             
-    print("-----------------------------------------------------------------------")
+    print("-------------------------------------------------------------------")
 
 
 # Comparación de los métodos
@@ -392,7 +287,8 @@ def estadisticas(url, N_pol, N_trozos):
 
     metodos = ['Polinómica', 'Lagrange', 'Newton', 'A trozos']
     colores = ['red', 'green', 'orange', 'blue']
-    porcentajes = [i for i in range(10, 60, 10)]
+    lineas = ['-', '--', '-.', ':']
+    porcentajes = [i for i in range(2, 24, 2)]
     errores, desviaciones, tiempos = [], [], []
 
     for i in porcentajes:
@@ -414,11 +310,12 @@ def estadisticas(url, N_pol, N_trozos):
         tiempos += [tiempo + [t]]
 
     imprimir("Error (Promedio)", porcentajes, errores, False)
-    imprimir("Desviación (Promedio)", porcentajes, desviaciones, False)
+    imprimir("Error (Desviación)", porcentajes, desviaciones, False)
 
     for i in range(4):
         errores_metodo = [errores[j][i] for j in range(len(porcentajes))]
-        plt.plot(porcentajes, errores_metodo, marker="o", color=colores[i], label=metodos[i])
+        plt.plot(porcentajes, errores_metodo, lineas[i], color=colores[i], label=metodos[i])
+    plt.title("Error (Promedio)")
     plt.legend()
     plt.xlabel("Porcentaje de entrenamiento")
     plt.ylabel("Error")
@@ -430,6 +327,7 @@ def estadisticas(url, N_pol, N_trozos):
     for i in range(4):
         tiempos_metodo = [tiempos[j][i] for j in range(len(porcentajes))]
         plt.plot(porcentajes, tiempos_metodo, marker="o", color=colores[i], label=metodos[i])
+    plt.title("Tiempo de ejecución")
     plt.legend()
     plt.xlabel("Porcentaje de entrenamiento")
     plt.ylabel("Tiempo")
@@ -437,10 +335,36 @@ def estadisticas(url, N_pol, N_trozos):
     plt.show()
 
 
+# Análisis de la Interpolación Lineal a Trozos
+def estadisticas_a_trozos(url, N):
+
+    porcentajes = [i for i in range(2, 100)]
+    errores, desviaciones, tiempos = [], [], []
+
+    for i in porcentajes:
+
+        te, ye, tv, yv = procesar(url, N, i)
+        ep, ed, t = resolver(te, ye, tv, yv, 4, False)
+
+        errores += [ep]
+        desviaciones += [ed]
+        tiempos += [t]
+
+    print("Error en la Interpolación Lineal a Trozos")
+    plt.title("Error en la Interpolación Lineal a Trozos")
+    plt.plot(porcentajes, errores, marker="o", color="blue")
+    plt.xlabel("Porcentaje de entrenamiento")
+    plt.ylabel("Error")
+    plt.grid()
+    plt.show()
+
+
 print("EJEMPLO 1")
 url = "https://raw.githubusercontent.com/paladinescamila/Laboratorio-3-CC/main/oro.csv"
-estadisticas(url, 50, 100)
+estadisticas(url, 100, 200)
+estadisticas_a_trozos(url, 200)
 
 print("EJEMPLO 2")
-url = "https://raw.githubusercontent.com/paladinescamila/Laboratorio-3-CC/main/clima.csv"
+url = "https://raw.githubusercontent.com/paladinescamila/Laboratorio-3-CC/main/python.csv"
 estadisticas(url, 50, 100)
+estadisticas_a_trozos(url, 100)
