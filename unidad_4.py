@@ -188,11 +188,11 @@ def resolver(te, ye, tv, yv, metodo, mostrar):
     if (mostrar):
         
         plt.plot(te[0], ye[0], 'ro', markersize=4, color="blue", label="Entrenamiento")
-        plt.plot(tv[0], yv[0], 'ro', markersize=3, color="red", label="Validación")
+        plt.plot(tv[0], yv[0], 'ro', markersize=4, color="red", label="Validación")
         plt.plot(t_funcion, y_funcion, color="black", label="Polinomio")
 
         for i in range(1, ne): plt.plot(te[i], ye[i], 'ro', markersize=4, color="blue")
-        for i in range(1, nv): plt.plot(tv[i], yv[i], 'ro', markersize=3, color="red")
+        for i in range(1, nv): plt.plot(tv[i], yv[i], 'ro', markersize=4, color="red")
 
         plt.legend()
         plt.xlabel('t')
@@ -286,7 +286,7 @@ def imprimir(titulo, porcentajes, valores, decimal):
 # Comparación de los métodos
 def estadisticas(url, N_pol, N_trozos):
 
-    metodos = ['Polinómica', 'Lagrange', 'Newton', 'A trozos']
+    metodos = ['Polinomial', 'Lagrange', 'Newton', 'A trozos']
     colores = ['red', 'green', 'orange', 'blue']
     lineas = ['-', '--', '-.', ':']
 
