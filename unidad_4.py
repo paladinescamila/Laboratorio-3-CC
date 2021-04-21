@@ -1,4 +1,5 @@
 # UNIDAD 4: INTERPOLACIÓN
+
 import time
 import numpy as np
 import pandas as pd
@@ -186,7 +187,7 @@ def resolver(te, ye, tv, yv, metodo, mostrar):
     error_desviacion = np.std(errores)
 
     if (mostrar):
-        
+
         plt.plot(te[0], ye[0], 'ro', markersize=4, color="blue", label="Entrenamiento")
         plt.plot(tv[0], yv[0], 'ro', markersize=4, color="red", label="Validación")
         plt.plot(t_funcion, y_funcion, color="black", label="Polinomio")
