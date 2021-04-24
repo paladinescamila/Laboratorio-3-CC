@@ -42,8 +42,7 @@ def polinomial(t, y):
 
     n = len(t)
     A = [[float(i**j) for j in range(n)] for i in t]
-    b = [i for i in y]
-    x = np.linalg.solve(A, b)
+    x = np.linalg.solve(A, y)
 
     return x
 
@@ -78,14 +77,13 @@ def newton(t, y):
 
     n = len(t)
     A = [[1.0 for _ in range(n)] for _ in range(n)]
-    b = [i for i in y]
 
     for i in range(n):
         for j in range(n):
             for k in range(j):
                 A[i][j] *= (t[i] - t[k])
     
-    x = np.linalg.solve(A, b)
+    x = np.linalg.solve(A, y)
 
     pol, t_sym = 0, sym.Symbol("t")
     for i in range(n):
