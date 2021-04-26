@@ -364,8 +364,8 @@ def estadisticas_a_trozos(url, N):
 
 print("EJEMPLO 1")
 url = "https://raw.githubusercontent.com/paladinescamila/Laboratorio-3-CC/main/oro.csv"
-estadisticas(url, 100, 200)
-estadisticas_a_trozos(url, 200)
+estadisticas(url, 100, 300)
+estadisticas_a_trozos(url, 300)
 
 print("EJEMPLO 2")
 url = "https://raw.githubusercontent.com/paladinescamila/Laboratorio-3-CC/main/python.csv"
