@@ -244,7 +244,7 @@ def main():
 
     print("EJEMPLO 2")
     url = "https://raw.githubusercontent.com/paladinescamila/Laboratorio-3-CC/main/python.csv"
-    # # url = "python.csv" # URL alternativa para ejecutar de manera local
+    # url = "python.csv" # URL alternativa para ejecutar de manera local
     te, ye, tv, yv = procesar(url, 50, 13)
     resolver(te, ye, tv, yv, 1, True)
     resolver(te, ye, tv, yv, 2, True)
